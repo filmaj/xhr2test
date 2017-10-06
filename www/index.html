@@ -28,7 +28,7 @@
             * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
                 * Enable inline JS: add 'unsafe-inline' to default-src
         -->
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com http://localhost:5000 https://www.apache.org https://crossorigin.me 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com http://localhost:5000 https://www.apache.org https://crossorigin.me http://cordova.apache.org 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content: file: blob:;">
         <meta name="format-detection" content="telephone=no">
         <meta name="msapplication-tap-highlight" content="no">
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
@@ -37,6 +37,10 @@
     </head>
     <body>
         <div style="z-index:99;">
+          <button id="dl-bot">request FS, download cordova bot as binary</button>
+          <img id="bot-img" src="" />
+          <button id="ul-bot">upload...?</button>
+          <hr />
           <button id="clear">wipe storage</button>
           <button id="dl-robots">download + store robots.txt</button>
           <button id="get-robots">retrieve robots.txt from storage after downloading</button>

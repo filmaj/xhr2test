@@ -71,6 +71,46 @@ var app = {
             localforage.clear();
             log('storage cleared');
         });
+        this.tap('dl-bot', function(evt) {
+            window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fs) {
+                console.log('file system open: ' + fs.name);
+                fs.root.getFile('bot.png', { create: true, exclusive: false }, function (fileEntry) {
+                    console.log('fileEntry is file?' + fileEntry.isFile.toString());
+                    var oReq = new XMLHttpRequest();
+                    oReq.open("GET", "http://cordova.apache.org/static/img/cordova_bot.png", true);
+                    oReq.responseType = "blob";
+                    oReq.onload = function (oEvent) {
+                        var blob = oReq.response; // Note: not oReq.responseText
+                        if (blob) {
+                            var url = window.URL.createObjectURL(blob);
+                            console.log('blob url is ' + url);
+                            document.getElementById('bot-img').src = url;
+                        } else console.log('the xhr response is not a blob?');
+                    };
+                    oReq.send(null);
+                }, function (err) { console.log('error getting file! ' + err); });
+            }, function (err) { console.log('error getting persistent fs! ' + err); });
+        });
+        this.tap('ul-bot', function (evt) {
+            window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fs) {
+                console.log('file system open: ' + fs.name);
+                fs.root.getFile('bot.png', { create: true, exclusive: false }, function (fileEntry) {
+                    fileEntry.file(function (file) {
+                        var reader = new FileReader();
+                        reader.onloadend = function() {
+                            var blob = new Blob([new Uint8Array(this.result)], { type: "image/png" });
+                            var oReq = new XMLHttpRequest();
+                            oReq.open("POST", "http://mysweeturl.com/upload_handler", true);
+                            oReq.onload = function (oEvent) {
+                                // all done!
+                            };
+                            oReq.send(blob);
+                        };
+                        reader.readAsArrayBuffer(file);
+                    }, onErrorReadFile);
+                }, function (err) { console.log('error getting file! ' + err); });
+            }, function (err) { console.log('error getting persistent fs! ' + err); });
+        });
         this.tap('dl-robots', function(evt) {
             download_blob_via_xhr(API + '/robots.txt', function (blob) {
                 saveAndReadBlob('robots', blob);
